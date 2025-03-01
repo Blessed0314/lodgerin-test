@@ -38,20 +38,6 @@ module.exports = (sequelize) => {
           },
         },
       },
-      phone: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          isNumeric: {
-            args: true,
-            msg: "El teléfono debe ser un número",
-          },
-          notEmpty: {
-            args: true,
-            msg: "El teléfono no puede estar vacío",
-          },
-        },
-      },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
