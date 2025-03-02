@@ -1,30 +1,36 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const { getUserByEmail } = require("../../services/userService"); // Asegúrate de tener este servicio implementado
+const { getUser } = require("../../services/user-service");
+const { createToken } = require("../../services/jwt-service")
+const { comparePw } = require( "../../services/bcrypt-service" )
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await getUserByEmail(email);
+    const user = await getUser(email);
+    
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({
+        statusCode: "401 Unauthorized", 
+        message: "Invalid email or password" 
+      });
+    }
+  
+    if (!await comparePw ( password, user.password )) {
+      return res.status(401).json({ 
+        statusCode: "401 Unauthorized",
+        message: "Invalid email or password" 
+      });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
+    const roleNames = user.Roles.map(role => role.dataValues.name);
+    const token = createToken(user.id, roleNames);
 
-    // Suponiendo que el rol del usuario está en user.role
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      "your_jwt_secret",
-      { expiresIn: "1h" }
-    );
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      statusCode: "500 Internal Server Error", 
+      message: error.message 
+    });
   }
 };
 

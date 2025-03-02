@@ -1,15 +1,18 @@
 const { Router } = require('express');
-// Importar todos los routers;
-// Ejemplo: const authRouter = require('./auth.js');
+
+const { userMiddleware, adminMiddleware } = require('../middleware/roleMiddleware');
+
+const loginController = require('../controllers/public/loginController');
+const registerController = require('../controllers/public/registerController');
+
 const adminRouter = require('./admin-routes.js');
 const publicRouter = require('./public-routes.js');
 
 const router = Router();
 
-// Configurar los routers
-// Ejemplo: router.use('/auth', authRouter);
-
-router.use('/admin', adminRouter)
-router.use('/public', publicRouter)
+router.use('/login', loginController);
+router.use('/register', registerController);
+router.use('/admin', adminMiddleware, adminRouter)
+router.use('/public', userMiddleware, publicRouter)
 
 module.exports = router;

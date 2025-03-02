@@ -30,12 +30,12 @@ const getUsers = async () => {
 }
 
 const createUser = async (user) => {
-    const idRoles = await Role.findAll({
-      attributes: ['id'],
-      where: {
-        name: {[Op.in]: user.roles}
-      }
-    })
+    const idRoles = user.roles.map(role => role.id);
+    const roles = await Role.findAll({
+        where: {
+            id: idRoles
+        }
+    });
 
     const newUser = await User.create(user);
     await newUser.addRoles(idRoles);
@@ -66,3 +66,11 @@ const updateUserPassword = async (id, password) => {
         returning: true
     });
 }
+
+module.exports = {
+    getUser,
+    getUsers,
+    createUser,
+    updateUser,
+    updateUserPassword
+  };
