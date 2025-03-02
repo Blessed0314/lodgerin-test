@@ -14,8 +14,8 @@ module.exports = (sequelize) => {
         allowNull: false,
         validate: {
           len: {
-            args: [3, 20],
-            msg: "El nombre debe tener entre 3 y 20 caracteres",
+            args: [10, 40],
+            msg: "El nombre debe tener entre 10 y 40 caracteres",
           },
           notEmpty: {
             args: true,
@@ -38,27 +38,13 @@ module.exports = (sequelize) => {
           },
         },
       },
-      phone: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          isNumeric: {
-            args: true,
-            msg: "El teléfono debe ser un número",
-          },
-          notEmpty: {
-            args: true,
-            msg: "El teléfono no puede estar vacío",
-          },
-        },
-      },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           len: {
-            args: [6, 30],
-            msg: "La contraseña debe tener entre 6 y 20 caracteres",
+            args: [40, 60],
+            msg: "La contraseña debe tener entre 40 y 60 caracteres",
           },
           notEmpty: {
             args: true,
