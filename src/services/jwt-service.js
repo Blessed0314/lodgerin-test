@@ -1,9 +1,11 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const { SIGN } = process.env;
 
-const createToken = (userId, role) => {    
+const revokedTokens = new Set();
+
+const createToken = (userId, role) => {
   return jwt.sign({ userId: userId, roles: role }, SIGN, {
     expiresIn: "1h",
   });
@@ -23,8 +25,16 @@ const getClaimFromToken = (token, claim) => {
     const decoded = jwt.verify(token, SIGN);
     return decoded[claim];
   } catch (error) {
-    return { valid: false, error: error.message }; 
+    return { valid: false, error: error.message };
   }
 };
 
-module.exports = { createToken, verifyToken, getClaimFromToken }
+const revokeToken = (token) => {
+  revokedTokens.add(token);
+};
+
+const isRevokedToken = (token) => {
+  return revokedTokens.has(token);
+}
+
+module.exports = { createToken, verifyToken, getClaimFromToken, revokeToken, isRevokedToken};

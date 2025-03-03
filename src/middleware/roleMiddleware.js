@@ -1,4 +1,4 @@
-const { getClaimFromToken, verifyToken } = require('../services/jwt-service');
+const { getClaimFromToken, verifyToken, isRevokedToken } = require('../services/jwt-service');
 
 const adminMiddleware = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -54,4 +54,18 @@ const userMiddleware = (req, res, next) => {
     next();
 };
 
-module.exports = { adminMiddleware, userMiddleware };
+const isRevokedMiddleware = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (isRevokedToken(token)) {
+        return res.status(401).json({
+            errorCode: '401 Unauthorized',
+            message: 'Token revoked' 
+        });
+    }
+
+    next();
+};
+
+
+module.exports = { adminMiddleware, userMiddleware, isRevokedMiddleware };
