@@ -1,3 +1,4 @@
+// filepath: /C:/Users/user/Documents/lodgerin-test/src/routes/index.js
 const { Router } = require('express');
 
 const { userMiddleware, adminMiddleware, isRevokedMiddleware } = require('../middleware/roleMiddleware');
@@ -11,10 +12,67 @@ const publicRouter = require('./public-routes.js');
 
 const router = Router();
 
-router.use('/login', loginController);
-router.use('/logout', logoutController);
-router.use('/register', registerController);
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: User login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ */
+router.post('/login', loginController);
+
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: User logout
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful logout
+ */
+router.post('/logout', logoutController);
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: User registration
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Successful registration
+ */
+router.post('/register', registerController);
+
 router.use('/admin', isRevokedMiddleware, adminMiddleware, adminRouter);
+
 router.use('/public', isRevokedMiddleware, userMiddleware, publicRouter);
 
 router.use((req, res, next) => {
