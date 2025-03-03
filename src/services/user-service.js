@@ -1,4 +1,3 @@
-const { Op } = require("sequelize");
 const { User, Role, conn } = require("../config/db");
 const { encryptPw } = require("./bcrypt-service");
 
@@ -86,9 +85,10 @@ const updateUser = async (id, user) => {
   }
 };
 
-const updateUserPassword = async (id, password) => {
+const updateUserPassword = async (id, newPassword) => {
+  
   return await User.update(
-    { password },
+    { password: await encryptPw(newPassword)},
     {
       where: { id },
       returning: true,
