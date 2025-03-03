@@ -20,6 +20,7 @@ const getUser = async (identifier) => {
 
 const getUsers = async () => {
   return await User.findAll({
+    attributes: { exclude: ["password"] },
     include: {
       model: Role,
       attributes: ["name"],
@@ -55,21 +56,34 @@ const createUser = async ({ name, email, password, roles }) => {
 };
 
 const updateUser = async (id, user) => {
-  const idRoles = await Role.findAll({
-    attributes: ["id"],
-    where: {
-      name: { [Op.in]: user.roles },
-    },
-  });
+  const { name, password, email, roles } = user;
 
-  const updatedUser = await User.update(user, {
-    where: { id },
-    returning: true,
-  });
+  const updatedFields = {};
+  if (name) updatedFields.name = name;
+  if (email) updatedFields.email = email;
+  if (password) updatedFields.password = await encryptPw(password);
 
-  const userUpdated = await User.findByPk(id);
-  await userUpdated.setRoles(idRoles);
-  return updatedUser;
+  const transaction = await conn.transaction();
+  try {
+    const updatedUser = await User.update(updatedFields, {
+      where: { id },
+      returning: true,
+      transaction,
+    });
+
+    if (roles) {
+      const idRoles = roles.map((role) => role.id);
+
+      const userUpdated = await User.findByPk(id, { transaction });
+      await userUpdated.setRoles(idRoles, { transaction });
+    }
+
+    await transaction.commit();
+    return updatedUser;
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
 };
 
 const updateUserPassword = async (id, password) => {

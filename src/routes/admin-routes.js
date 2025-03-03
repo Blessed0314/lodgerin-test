@@ -1,19 +1,17 @@
 const { Router } = require('express');
 const createUserController = require('../controllers/admin/createUserController');
+const getUsersController = require('../controllers/admin/getUsersController');
+const getUserController = require('../controllers/admin/getUserController');
+const updateUserController = require('../controllers/admin/updateUserController');
+
 const adminRouter = Router();
 
-// Definir las subrutas
-adminRouter.get('/users', (req, res) => {
-  res.send('Admin Dashboard');
-});
 
-adminRouter.get('/user/:id', (req, res) => {
-  res.send('Admin Settings');
-});
+adminRouter.get('/users', getUsersController);
 
-adminRouter.put('/user/:id', (req, res) => {
-  res.send('Admin Settings');
-});
+adminRouter.get('/user/:id', getUserController);
+
+adminRouter.put('/user/:id', updateUserController);
 
 adminRouter.post('/create', createUserController);
 

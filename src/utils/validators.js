@@ -24,5 +24,13 @@ const rolesValidator = async(roles) => {
     }
 }
 
+const searchUserValidator = async (identifier) => {
+    try {
+        if (!identifier) return "User id is required";
+        if (!await getUser(identifier)) return "User not found";
+    } catch (error) {
+        return error.message;
+    }
+}
 
-module.exports = { newUserValidator, rolesValidator };
+module.exports = { newUserValidator, rolesValidator, searchUserValidator };
