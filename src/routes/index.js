@@ -2,8 +2,8 @@ const { Router } = require('express');
 
 const { userMiddleware, adminMiddleware } = require('../middleware/roleMiddleware');
 
-const loginController = require('../controllers/public/loginController');
-const registerController = require('../controllers/public/registerController');
+const loginController = require('../controllers/common/loginController');
+const registerController = require('../controllers/common/registerController');
 
 const adminRouter = require('./admin-routes.js');
 const publicRouter = require('./public-routes.js');
