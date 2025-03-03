@@ -24,8 +24,11 @@ const loginController = async (req, res) => {
 
     const roleNames = user.Roles.map(role => role.dataValues.name);
     const token = createToken(user.id, roleNames);
-
-    res.json({ token });
+    
+    res.json({
+      statusCode: "200 OK", 
+      token 
+    });
   } catch (error) {
     res.status(500).json({
       statusCode: "500 Internal Server Error", 

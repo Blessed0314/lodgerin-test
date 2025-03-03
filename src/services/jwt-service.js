@@ -3,9 +3,7 @@ require('dotenv').config();
 const jwt = require("jsonwebtoken");
 const { SIGN } = process.env;
 
-const createToken = (userId, role) => {
-  console.log(SIGN);
-  
+const createToken = (userId, role) => {    
   return jwt.sign({ userId: userId, roles: role }, SIGN, {
     expiresIn: "1h",
   });
