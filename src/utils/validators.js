@@ -1,5 +1,6 @@
 const { getUser } = require('../services/user-service');
 const { getRole } = require('../services/role-service');
+const { comparePw } = require('../services/bcrypt-service');
 
 const newUserValidator = async({ name, email, password }) => {
     if( !name || !email || !password )
@@ -33,4 +34,12 @@ const searchUserValidator = async (identifier) => {
     }
 }
 
-module.exports = { newUserValidator, rolesValidator, searchUserValidator };
+const passwordValidator = async (id, oldPassword, newPassword) => {
+    if (!oldPassword) return "Old password is required";
+    if (!newPassword) return "New password is required";
+
+    const user = await getUser(id);
+    if (!await comparePw(oldPassword, user.password)) return "The current password is incorrect";  
+}
+
+module.exports = { newUserValidator, rolesValidator, searchUserValidator, passwordValidator };
