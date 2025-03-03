@@ -1,5 +1,5 @@
 const { Router } = require('express');
-
+const createUserController = require('../controllers/admin/createUserController');
 const adminRouter = Router();
 
 // Definir las subrutas
@@ -15,8 +15,6 @@ adminRouter.put('/user/:id', (req, res) => {
   res.send('Admin Settings');
 });
 
-adminRouter.post('/create', (req, res) => {
-  res.send('Admin Settings');
-});
+adminRouter.post('/create', createUserController);
 
 module.exports = adminRouter;
