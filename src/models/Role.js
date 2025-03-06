@@ -8,7 +8,6 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        defaultValue: DataTypes.INTEGER,
       },
       name: {
         type: DataTypes.STRING,
@@ -27,10 +26,5 @@ module.exports = (sequelize) => {
     },
     { freezeTableName: true, timestamps: false }
   );
-  Role.sync().then(() => {
-    Role.findOrCreate({ where: { name: 'admin' } });
-    Role.findOrCreate({ where: { name: 'guest' } });
-  });
-
-  return Role;
+  
 };
